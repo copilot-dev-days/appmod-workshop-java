@@ -1,75 +1,84 @@
 package com.microsoft.migration.assets.config;
 
-import org.springframework.amqp.core.AcknowledgeMode;
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.DirectExchange;
-import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.core.QueueBuilder;
-import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
-import org.springframework.amqp.rabbit.connection.ConnectionFactory;
-import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
-import org.springframework.amqp.support.converter.MessageConverter;
-import org.springframework.boot.autoconfigure.amqp.SimpleRabbitListenerContainerFactoryConfigurer;
+import com.azure.core.credential.TokenCredential;
+import com.azure.core.exception.ResourceExistsException;
+import com.azure.core.exception.ResourceNotFoundException;
+import com.azure.messaging.servicebus.administration.ServiceBusAdministrationClient;
+import com.azure.messaging.servicebus.administration.ServiceBusAdministrationClientBuilder;
+import com.azure.messaging.servicebus.administration.models.CreateQueueOptions;
+import com.azure.messaging.servicebus.administration.models.QueueProperties;
+import com.azure.spring.cloud.autoconfigure.implementation.servicebus.properties.AzureServiceBusProperties;
+import com.azure.spring.messaging.ConsumerIdentifier;
+import com.azure.spring.messaging.PropertiesSupplier;
+import com.azure.spring.messaging.servicebus.core.properties.ProcessorProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.time.Duration;
 
 @Configuration
 public class RabbitConfig {
     public static final String IMAGE_PROCESSING_QUEUE = "image-processing";
-
-    // Dead letter queue configuration for the retry mechanism
-    public static final String RETRY_EXCHANGE = "image-processing.retry";
-    public static final String RETRY_QUEUE = "image-processing.retry";
-    public static final String RETRY_ROUTING_KEY = "retry";
-    public static final int RETRY_DELAY_MS = 60000; // 1 minute delay
+    public static final String RETRY_QUEUE = "retry-queue";
+    public static final Duration RETRY_QUEUE_TTL = Duration.ofMinutes(1);
 
     @Bean
-    public Queue imageProcessingQueue() {
-        return QueueBuilder.durable(IMAGE_PROCESSING_QUEUE
-)
-                .withArgument("x-dead-letter-exchange", RETRY_EXCHANGE)
-                .withArgument("x-dead-letter-routing-key", RETRY_ROUTING_KEY)
-                .build();
+    public ServiceBusAdministrationClient adminClient(AzureServiceBusProperties properties, TokenCredential credential) {
+        return new ServiceBusAdministrationClientBuilder()
+            .credential(properties.getFullyQualifiedNamespace(), credential)
+            .buildClient();
     }
 
     @Bean
-    public Queue retryQueue() {
-        return QueueBuilder.durable(RETRY_QUEUE)
-                .withArgument("x-dead-letter-exchange", "")
-                .withArgument("x-dead-letter-routing-key", IMAGE_PROCESSING_QUEUE
-        )
-                .withArgument("x-message-ttl", RETRY_DELAY_MS)
-                .build();
+    public QueueProperties retryQueue(ServiceBusAdministrationClient adminClient) {
+        try {
+            return adminClient.getQueue(RETRY_QUEUE);
+        } catch (ResourceNotFoundException e) {
+            try {
+                CreateQueueOptions options = new CreateQueueOptions()
+                    .setDefaultMessageTimeToLive(RETRY_QUEUE_TTL)
+                    .setDeadLetteringOnMessageExpiration(true);
+                return adminClient.createQueue(RETRY_QUEUE, options);
+            } catch (ResourceExistsException ex) {
+                // Queue was created by another instance in the meantime
+                return adminClient.getQueue(RETRY_QUEUE);
+            }
+        }
     }
 
     @Bean
-    public DirectExchange retryExchange() {
-        return new DirectExchange(RETRY_EXCHANGE);
+    public QueueProperties imageProcessingQueue(ServiceBusAdministrationClient adminClient, QueueProperties retryQueue) {
+        QueueProperties queue;
+        try {
+            queue = adminClient.getQueue(IMAGE_PROCESSING_QUEUE);
+        } catch (ResourceNotFoundException e) {
+            try {
+                CreateQueueOptions options = new CreateQueueOptions()
+                    .setForwardDeadLetteredMessagesTo(RETRY_QUEUE);
+                queue = adminClient.createQueue(IMAGE_PROCESSING_QUEUE, options);
+            } catch (ResourceExistsException ex) {
+                // Queue was created by another instance in the meantime
+                queue = adminClient.getQueue(IMAGE_PROCESSING_QUEUE);
+            }
+        }
+        
+        // Configure retry queue's DLQ forwarding now that image processing queue exists
+        try {
+            retryQueue.setForwardDeadLetteredMessagesTo(IMAGE_PROCESSING_QUEUE);
+            adminClient.updateQueue(retryQueue);
+        } catch (Exception ex) {
+            // Ignore update errors since basic functionality will still work
+        }
+        
+        return queue;
     }
 
     @Bean
-    public Binding retryBinding() {
-        return BindingBuilder
-                .bind(retryQueue())
-                .to(retryExchange())
-                .with(RETRY_ROUTING_KEY);
-    }
-
-    @Bean
-    public MessageConverter jsonMessageConverter() {
-        return new Jackson2JsonMessageConverter();
-    }
-
-    @Bean
-    public SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory(
-            ConnectionFactory connectionFactory,
-            SimpleRabbitListenerContainerFactoryConfigurer configurer) {
-        SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
-        configurer.configure(factory, connectionFactory);
-        factory.setMessageConverter(jsonMessageConverter());
-        factory.setAcknowledgeMode(AcknowledgeMode.MANUAL);
-        factory.setDefaultRequeueRejected(false);
-        return factory;
+    public PropertiesSupplier<ConsumerIdentifier, ProcessorProperties> propertiesSupplier() {
+        return identifier -> {
+            ProcessorProperties processorProperties = new ProcessorProperties();
+            processorProperties.setAutoComplete(false);
+            return processorProperties;
+        };
     }
 }
