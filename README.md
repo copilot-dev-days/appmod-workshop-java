@@ -25,6 +25,10 @@ RabbitMQ(RabbitMQ)
 %% Database
 PostgreSQL[(PostgreSQL)]
 
+%% Queues
+Queue[image-processing queue]
+RetryQueue[image-processing.retry queue]
+
 %% User
 User([User])
 
@@ -42,7 +46,10 @@ WebApp -->|Retrieve Images| LocalFS
 WebApp -->|Retrieve Metadata| PostgreSQL
 
 %% RabbitMQ Flow
-RabbitMQ -->|Push Message| Worker
+RabbitMQ -->|Push Message| Queue
+Queue -->|Processing Failed| RetryQueue
+RetryQueue -->|After 1 min delay| Queue
+Queue -->|Consume Message| Worker
 
 %% Worker Flow
 Worker -->|Download Original| S3
@@ -93,6 +100,10 @@ ServiceBus(Azure Service Bus)
 %% Azure Database
 AzPostgreSQL[(Azure PostgreSQL)]
 
+%% Queues
+Queue[image-processing queue]
+RetryQueue[retry queue]
+
 %% User
 User([User])
 
@@ -110,7 +121,10 @@ WebApp -->|Retrieve Images| LocalFS
 WebApp -->|Retrieve Metadata| AzPostgreSQL
 
 %% Service Bus Flow
-ServiceBus -->|Push Message| Worker
+ServiceBus -->|Push Message| Queue
+Queue -->|Processing Failed| RetryQueue
+RetryQueue -->|After 1 min delay| Queue
+Queue -->|Consume Message| Worker
 
 %% Worker Flow
 Worker -->|Download Original| AzBlob
@@ -125,7 +139,7 @@ classDef app fill:#90caf9,stroke:#0d47a1,color:#0d47a1
 classDef storage fill:#68B3A1,stroke:#006064,color:#006064
 classDef broker fill:#B39DDB,stroke:#4527A0,color:#4527A0
 classDef db fill:#90CAF9,stroke:#1565C0,color:#1565C0
-classDef queue fill:#fff59d,stroke:#f57f17,color:#f57f17
+classDef queue fill:#81C784,stroke:#2E7D32,color:#2E7D32
 classDef user fill:#ef9a9a,stroke:#b71c1c,color:#b71c1c
 
 class WebApp,Worker app

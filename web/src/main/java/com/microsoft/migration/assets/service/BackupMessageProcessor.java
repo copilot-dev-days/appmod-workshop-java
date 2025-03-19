@@ -9,7 +9,7 @@ import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
-import static com.microsoft.migration.assets.config.RabbitConfig.QUEUE_NAME;
+import static com.microsoft.migration.assets.config.RabbitConfig.IMAGE_PROCESSING_QUEUE;
 
 import java.io.IOException;
 
@@ -27,7 +27,7 @@ public class BackupMessageProcessor {
      * Processes image messages from a backup queue for monitoring and resilience purposes.
      * Uses the same RabbitMQ API pattern as the worker module.
      */
-    @RabbitListener(queues = QUEUE_NAME)
+    @RabbitListener(queues = IMAGE_PROCESSING_QUEUE)
     public void processBackupMessage(final ImageProcessingMessage message, 
                                     Channel channel, 
                                     @Header(AmqpHeaders.DELIVERY_TAG) long deliveryTag) {

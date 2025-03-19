@@ -6,11 +6,7 @@ import com.rabbitmq.client.Channel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.support.AmqpHeaders;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.Header;
-import org.springframework.retry.RetryCallback;
-import org.springframework.retry.RetryContext;
-import org.springframework.retry.support.RetryTemplate;
 
 import javax.imageio.ImageIO;
 import java.awt.Graphics2D;
@@ -20,49 +16,16 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import static com.microsoft.migration.assets.worker.config.RabbitConfig.QUEUE_NAME;
+import static com.microsoft.migration.assets.worker.config.RabbitConfig.IMAGE_PROCESSING_QUEUE;
 
 @Slf4j
 public abstract class AbstractFileProcessingService implements FileProcessor {
 
-    @Autowired
-    private RetryTemplate retryTemplate;
-
-    @RabbitListener(queues = QUEUE_NAME)
+    @RabbitListener(queues = IMAGE_PROCESSING_QUEUE)
     public void processImage(final ImageProcessingMessage message, 
                            Channel channel, 
                            @Header(AmqpHeaders.DELIVERY_TAG) long deliveryTag) {
-        try {
-            retryTemplate.execute(new RetryCallback<Void, Exception>() {
-                @Override
-                public Void doWithRetry(RetryContext context) throws Exception {
-                    if (context.getRetryCount() > 0) {
-                        log.info("Retry attempt {} for image: {}", context.getRetryCount(), message.getKey());
-                    }
-                    
-                    processImageWithRetry(message);
-                    return null;
-                }
-            });
-            
-            // Success - acknowledge the message
-            log.debug("Acknowledging message after successful processing: {}", message.getKey());
-            channel.basicAck(deliveryTag, false);
-        } catch (Exception e) {
-            log.error("All retry attempts failed for image: " + message.getKey(), e);
-            
-            try {
-                // After all retries are exhausted, reject the message
-                // to retry later, use basicNack with requeue=true
-                log.debug("Rejecting message after all retry attempts failed: {}", message.getKey());
-                channel.basicNack(deliveryTag, false, true);
-            } catch (IOException ackEx) {
-                log.error("Error handling RabbitMQ acknowledgment for: {}", message.getKey(), ackEx);
-            }
-        }
-    }
-    
-    private void processImageWithRetry(ImageProcessingMessage message) {
+        boolean processingSuccess = false;
         Path tempDir = null;
         Path originalFile = null;
         Path thumbnailFile = null;
@@ -87,13 +50,17 @@ public abstract class AbstractFileProcessingService implements FileProcessor {
                 uploadThumbnail(thumbnailFile, thumbnailKey, message.getContentType());
 
                 log.info("Successfully processed image: {}", message.getKey());
+
+                // Mark processing as successful
+                processingSuccess = true;
             } else {
                 log.debug("Skipping message with storage type: {} (we handle {})",
                     message.getStorageType(), getStorageType());
+                // This is not an error, just not for this service, so we can acknowledge
+                processingSuccess = true;
             }
         } catch (Exception e) {
             log.error("Failed to process image: " + message.getKey(), e);
-            throw new RuntimeException("Failed to process image: " + message.getKey(), e);
         } finally {
             try {
                 // Cleanup temporary files
@@ -106,12 +73,23 @@ public abstract class AbstractFileProcessingService implements FileProcessor {
                 if (tempDir != null) {
                     Files.deleteIfExists(tempDir);
                 }
+
+                if (processingSuccess) {
+                    // Acknowledge the message if processing was successful
+                    channel.basicAck(deliveryTag, false);
+                    log.debug("Message acknowledged for: {}", message.getKey());
+                } else {
+                    // Reject the message with requeue=false to trigger dead letter exchange
+                    // This will route the message to the retry queue with delay
+                    channel.basicNack(deliveryTag, false, false);
+                    log.debug("Message rejected and sent to dead letter exchange for delayed retry: {}", message.getKey());
+                }
             } catch (IOException e) {
-                log.error("Error cleaning up temporary files for: {}", message.getKey(), e);
+                log.error("Error handling RabbitMQ acknowledgment for: {}", message.getKey(), e);
             }
         }
     }
-
+    
     protected abstract String generateUrl(String key);
 
     protected void generateThumbnail(Path input, Path output) throws IOException {
