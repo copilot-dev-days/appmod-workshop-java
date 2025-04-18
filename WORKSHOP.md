@@ -47,10 +47,8 @@ The first step is to assess the sample Java application `asset-manager`. The ass
 
 ### Migrate to Azure Database for PostgreSQL Flexible Server using Predefined Formula
 
-1. In Copilot chat window, scroll to the bottom in the Copilot Chat window.
-1. In the GitHub Copilot Chat pane, scroll to the bottom to view the list of available formulas.
-1. Select the predefined formula for **Azure Database for PostgreSQL Flexible Server**.
-1. Click **Continue** repeatedly to confirm each tool action.
+1. After clicking the Migrate button in the Solution Report, Copilot chat window will be opened with Agent Mode.
+1. In Copilot chat window, click **Continue** repeatedly to confirm each tool action. The Copilot Agent uses various tools to facilitate application modernization. Each tool's usage requires confirmation by clicking the `Continue` button.
 1. Review the proposed code changes and click **Keep** to apply them.
 1. Click **Continue** to confirm to run **Java Application Build-Fix** tool. This tool will attempt to resolve any build errors, in up to 10 iterations.
 1. After the Build-Fix tool begins, click **Continue** to proceed and show progress and migration summary.
