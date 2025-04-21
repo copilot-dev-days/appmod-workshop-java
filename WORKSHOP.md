@@ -3,7 +3,7 @@
 > [!IMPORTANT]
 > `GitHub Copilot app modernization for Java on Azure` is in preview and is subject to change before becoming generally available.
 
-`GitHub Copilot app modernization for Java on Azure` assists with app assessment, planning and code remediation. It automates repetitive tasks, boosting developer confidence and speeding up the Azure migration and ongoing optimization.
+`GitHub Copilot app modernization for Java on Azure` (also referred to as App Modernization for Java on Azure) assists with app assessment, planning and code remediation. It automates repetitive tasks, boosting developer confidence and speeding up the Azure migration and ongoing optimization.
 
 In this workshop, you learn how to use `GitHub Copilot app modernization for Java on Azure` to assess and migrate a sample Java application `asset-manager` to Azure. For more information about the sample application, see [Asset Manager](README.md).
 
@@ -35,11 +35,12 @@ The following sections guide you through the process of migrating the sample Jav
 The first step is to assess the sample Java application `asset-manager`. The assessment provides insights into the application's readiness for migration to Azure.
 
 1. Open the VS code with all the prerequisites installed on the asset manager by changing the directory to the `asset manager` directory and running `code .` in that directory.
-1. Open the extension `GitHub Copilot app modernization for Java on Azure`.
+1. Open the extension `App Modernization for Java on Azure`.
 1. The **Assess** button looks a triangle pointing right. Select **Assess**, the Github Copilot chat window will be opened and propose to run Modernization Assessor. Please confirm the tool usage by clicking **Continue**. 
 
-   > **NOTE**: If you are asked to allow the tool access the language models provided by GitHub Copilot Chat, slect **Allow** to proceed.
+   > **NOTE**: If you are asked to allow the tool access the language models provided by GitHub Copilot Chat, select **Allow** to proceed.
 
+1. After each step, please manually input a response to confirm and proceed.
 1. Wait for the assessment to be completed and the report to be generated.
 1. Review the **Summary** report. Select **Propose Solution** to view the proposed solutions for the issues identified in the summary report.
 1. For this workshop, deselect all solutions and select **Use Azure Database for PostgreSQL** in the Solution report, then select **Confirm Solution**.
@@ -49,9 +50,10 @@ The first step is to assess the sample Java application `asset-manager`. The ass
 
 1. After clicking the Migrate button in the Solution Report, Copilot chat window will be opened with Agent Mode.
 1. In Copilot chat window, click **Continue** repeatedly to confirm each tool action. The Copilot Agent uses various tools to facilitate application modernization. Each tool's usage requires confirmation by clicking the `Continue` button.
-1. Review the proposed code changes and click **Keep** to apply them.
+1. After each step, please manually input a response to confirm and proceed.
 1. Click **Continue** to confirm to run **Java Application Build-Fix** tool. This tool will attempt to resolve any build errors, in up to 10 iterations.
 1. After the Build-Fix tool begins, click **Continue** to proceed and show progress and migration summary.
+1. Review the proposed code changes and click **Keep** to apply them.
 
 ### Migrate to Azure Blob Storage and Azure Service Bus using Custom Formula
 
@@ -59,12 +61,13 @@ Recall that the sample Java application `asset-manager` uses AWS S3 for image st
 
 Now, you migrate the **Worker Service** to use Azure Blob Storage and Azure Service Bus as well, by using custom formula created from existing commits that migrated the **Web Application**.
 
-1. Open the sidebar of `GitHub Copilot app modernization for Java on Azure`. Hover the mouse over the **Formulas** section.  Select **Create formula from source control**. This icon looks like two circles with arrows pointing to the other circle. Type **migrate web** to search for the commits that migrated the **Web Application**, and you should see two commits listed:
+1. Open the sidebar of `App Modernization for Java on Azure`. Hover the mouse over the **Formulas** section.  Select **Create formula from source control**. This icon looks like two circles with arrows pointing to the other circle. Type **migrate web** to search for the commits that migrated the **Web Application**, and you should see two commits listed:
    * migrate web rabbitmq to azure service bus
    * migrate web s3 to azure blob storage
 1. Select these two commits. Click **Create New** to create a new custom formula.
 1. Formula name, formula description, and code location patterns will be generated in order. Press `Enter` repeatedly to confirm.
-1. Select and run the custom formula you created in the FORMULAS section of the sidebar of `GitHub Copilot app modernization for Java on Azure`. Follow the same steps as the predefined formula to review and apply the changes, and run the **Java Application Build-Fix** tool to apply build fixes.
+1. Select and run the custom formula you created in the FORMULAS section of the sidebar of `App Modernization for Java on Azure`. Follow the same steps as the predefined formula to review and apply the changes, and run the **Java Application Build-Fix** tool to apply build fixes.
+1. Review the proposed code changes and click **Keep** to apply them.
 
 ## Deploy to Azure
 
