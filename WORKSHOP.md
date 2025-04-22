@@ -16,7 +16,7 @@ To successfully complete this workshop, you need the following:
 - [GitHub Copilot extension in VSCode](https://code.visualstudio.com/docs/copilot/overview): The latest version is recommended.
 - [AppCAT](https://aka.ms/appcat-install): Required for the app assessment feature.
 - [JDK 21](https://learn.microsoft.com/en-us/java/openjdk/download#openjdk-21): Required for the code remediation feature and running the initial application locally.
-- [Maven 3.9.9](https://maven.apache.org/install.html): Required for the code remediation feature.
+- [Maven 3.9.9](https://maven.apache.org/install.html): Required for the assessment and code remediation feature.
 - [Azure subscription](https://azure.microsoft.com/free/): Required to deploy the migrated application to Azure.
 - [Azure CLI](https://docs.microsoft.com/cli/azure/install-azure-cli): Required if you deploy the migrated application to Azure locally. The latest version is recommended.
 - Fork the [GitHub repository](https://github.com/Azure-Samples/java-migration-copilot-samples) that contains the sample Java application. Clone it to your local machine. Open the `asset-manager` folder in VSCode and checkout the `workshop` branch.
@@ -24,6 +24,14 @@ To successfully complete this workshop, you need the following:
 ## Install GitHub Copilot App Modernization - Java on Azure Tool
 
 In VSCode, open the Extensions view from Activity Bar, search `GitHub Copilot App Modernization - Java on Azure` extension in marketplace. Select the Install button on the extension. After installation completes, you should see a notification in the bottom-right corner of VSCode confirming success.
+
+In VSCode, configure runtime arguments to enable the proposed API:
+```json
+  "enable-proposed-api": ["Microsoft.migrate-java-to-azure"],
+```
+1. Press **Ctrl+Shift+P** and select **Preferences: Configure Runtime Arguments**.
+2. Add the above JSON snippet into the editor and save.
+3. Restart VSCode.
 
 
 ## Migrate the Sample Java Application
@@ -40,10 +48,15 @@ The first step is to assess the sample Java application `asset-manager`. The ass
 
    > **NOTE**: If you are asked to allow the tool access the language models provided by GitHub Copilot Chat, select **Allow** to proceed.
 
+![Trigger Assessment](doc-media/trigger-assessment.png)
+
 1. After each step, please manually input "continue" to confirm and proceed.
 1. Wait for the assessment to be completed and the report to be generated.
 1. Review the **Summary** report. Select **Propose Solution** to view the proposed solutions for the issues identified in the summary report.
 1. For this workshop, deselect all solutions and select **Use Azure Database for PostgreSQL** in the Solution report, then select **Confirm Solution**.
+
+![Confirm Solution](doc-media/confirm-postgresql-solution.png)
+
 1. In the Migrate report, click **Migrate**.
 
 ### Migrate to Azure Database for PostgreSQL Flexible Server using Predefined Formula
