@@ -199,6 +199,8 @@ The first step is to assess the sample Java application `asset-manager`. The ass
     ![Java Upgrade](doc-media/java-upgrade.png)
 1. After clicking the **Run Task** button, the Copilot Chat panel will open with Agent Mode. The agent will check out a new branch and start upgrading the JDK version and Spring/Spring Boot framework. Click **Allow** for any requests from the agent.
 
+> Note: The upgrading tool also supports upgrading to JDK 25 (the latest LTS version). To do this, click on the generated chat message, edit the target Java version to 25, and then click **Send** to apply the change.
+
 ### Migrate to Azure Database for PostgreSQL Flexible Server using Predefined Tasks
 
 Then you can migrate the sample Java application `asset-manager` to Azure.
