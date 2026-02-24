@@ -147,8 +147,13 @@
 
     <script>
         const steps = [
-            { id: 'readme', file: 'README.md', title: 'Workshop Overview', number: '📚' },
-            { id: 'prompts', file: 'PROMPTS.md', title: 'Copilot Prompts Guide', number: '01' },
+            { id: '00-overview', file: 'workshop/00-overview.md', title: 'Workshop Overview', number: '📚' },
+            { id: '01-prerequisites', file: 'workshop/01-prerequisites.md', title: 'Prerequisites & Setup', number: '01' },
+            { id: '02-assess', file: 'workshop/02-assess.md', title: 'Assess Your Application', number: '02' },
+            { id: '03-upgrade', file: 'workshop/03-upgrade.md', title: 'Upgrade Runtime & Frameworks', number: '03' },
+            { id: '04-health-endpoints', file: 'workshop/04-health-endpoints.md', title: 'Health Endpoints', number: '04' },
+            { id: '05-containerize', file: 'workshop/05-containerize.md', title: 'Containerize Applications', number: '05' },
+            { id: 'prompts', file: 'PROMPTS.md', title: 'Copilot Prompts Guide', number: '📖' },
         ];
 
         const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:';
@@ -158,7 +163,7 @@
 
         function getStepFromURL() {
             const params = new URLSearchParams(window.location.search);
-            return params.get('step') || 'readme';
+            return params.get('step') || '00-overview';
         }
 
         function buildSidebar() {
