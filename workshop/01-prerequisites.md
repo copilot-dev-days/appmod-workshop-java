@@ -52,5 +52,3 @@ cd appmod-workshop-java
 - [ ] GitHub Copilot app modernization extension/plugin installed
 - [ ] Repository cloned locally
 - [ ] Java JDK and Maven installed
-
-👉 **[Continue to Step 2: Assess Your Application →](02-assess.md)**

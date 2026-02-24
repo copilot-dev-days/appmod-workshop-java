@@ -31,5 +31,3 @@ The assessment report provides:
 - [ ] Assessment triggered from the QUICKSTART view
 - [ ] Assessment report generated successfully
 - [ ] Issues tab reviewed with proposed solutions
-
-👉 **[Continue to Step 3: Upgrade Runtime & Frameworks →](03-upgrade.md)**

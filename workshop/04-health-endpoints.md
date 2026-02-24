@@ -47,5 +47,3 @@ The custom task will:
 - [ ] Task executed successfully
 - [ ] Health endpoint code changes reviewed and applied
 - [ ] `/actuator/health` endpoint will be available when the app runs
-
-👉 **[Continue to Step 5: Containerize Applications →](05-containerize.md)**

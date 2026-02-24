@@ -39,5 +39,3 @@ After the agent completes its work:
 - [ ] Changes reviewed in diff view
 - [ ] Java version updated to 21 in `pom.xml`
 - [ ] Spring Boot upgraded to 3.x
-
-👉 **[Continue to Step 4: Health Endpoints →](04-health-endpoints.md)**

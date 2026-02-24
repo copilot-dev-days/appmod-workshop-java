@@ -40,5 +40,3 @@ The complete workshop takes approximately **35 minutes** to complete:
 - How to upgrade Java versions and Spring Boot frameworks with AI assistance
 - How to create **custom tasks** for specialized modernization needs
 - How to containerize Java applications for cloud deployment
-
-👉 **[Start with Prerequisites & Setup →](01-prerequisites.md)**
