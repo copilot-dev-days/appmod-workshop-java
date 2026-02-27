@@ -31,12 +31,12 @@ The complete workshop takes approximately **35 minutes** to complete:
 | 01 | [Prerequisites & Setup](01-prerequisites.md) | Install tools and clone the repository |
 | 02 | [Assess Your Application](02-assess.md) | Run the assessment to analyze your app |
 | 03 | [Upgrade Runtime & Frameworks](03-upgrade.md) | Upgrade Java and Spring Boot versions |
-| 04 | [Health Endpoints](04-health-endpoints.md) | Expose health endpoints using custom tasks |
+| 04 | [Health Endpoints](04-health-endpoints.md) | Expose health endpoints using custom skills |
 | 05 | [Containerize Applications](05-containerize.md) | Prepare your app for cloud deployment |
 
 ## What You'll Learn
 
 - How to use **GitHub Copilot app modernization** to assess legacy Java applications
 - How to upgrade Java versions and Spring Boot frameworks with AI assistance
-- How to create **custom tasks** for specialized modernization needs
+- How to create **custom skills** for specialized modernization needs
 - How to containerize Java applications for cloud deployment

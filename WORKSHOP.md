@@ -8,7 +8,7 @@ The following sections guide you through the process of modernizing the sample J
 - [Install GitHub Copilot app modernization](#install-github-copilot-app-modernization)
 - [Assess Your Java Application](#assess-your-java-application)
 - [Upgrade Runtime & Frameworks](#upgrade-runtime--frameworks)
-- [Expose health endpoints using Custom Tasks](#expose-health-endpoints-using-custom-tasks)
+- [Expose health endpoints using Custom Skills](#expose-health-endpoints-using-custom-skills)
 - [Containerize Applications](#containerize-applications)
 
 ## Prerequisites
@@ -51,13 +51,13 @@ Alternatively, you can use IntelliJ IDEA. Open **File** > **Settings** (or **Int
 The first step is to assess the sample Java application `asset-manager`. The assessment provides insights into the application's readiness for migration to Azure.
 
 1. Open VS Code with all the prerequisites installed for the asset manager by changing the directory to the `asset-manager` directory and running `code .` in that directory.
-1. Open the `GitHub Copilot app modernization` extension.
-1. In the **QUICKSTART** view, click the **Migrate to Azure** button to trigger app assessment.
+1. In the Activity sidebar, open the **GitHub Copilot app modernization** extension pane.
+1. In the **QUICKSTART** section, click **Start Assessment** to trigger the app assessment.
 
    ![Trigger Assessment](doc-media/trigger-assessment.png)
 
-1. Wait for the assessment to be completed and the report to be generated.
-1. Review the **Assessment Report**. Select the **Issues** tab to view the proposed solutions for the issues identified in the report.
+1. Wait for the assessment to be completed. This step could take several minutes.
+1. Upon completion, an **Assessment Report** tab opens. This report provides a categorized view of cloud readiness issues and recommended solutions. Select the **Issues** tab to view proposed solutions and proceed with migration steps.
 
 ## Upgrade Runtime & Frameworks
 
@@ -68,31 +68,33 @@ The first step is to assess the sample Java application `asset-manager`. The ass
 
 > Note: The upgrading tool also supports upgrading to JDK 25 (the latest LTS version). To do this, click on the generated chat message, edit the target Java version to 25, and then click **Send** to apply the change.
 
-## Expose health endpoints using Custom Tasks
+## Expose health endpoints using Custom Skills
 
-In this section, you will use custom tasks to expose health endpoints for your applications instead of writing code yourself. The following steps demonstrate how to generate custom tasks based on external web links and proper prompts.
+In this section, you will use custom skills to expose health endpoints for your applications instead of writing code yourself. The following steps demonstrate how to create a custom skill with references and proper prompts.
 
-> Note: Custom tasks are not supported for the IntelliJ IDEA plugin. If you are using IntelliJ IDEA, you can skip this section.
+> Note: Custom skills (My Skills) are not supported for the IntelliJ IDEA plugin. If you are using IntelliJ IDEA, you can skip this section.
 
-1. Open the sidebar of `GITHUB COPILOT APP MODERNIZATION`. Click the `+` button in the **Tasks** view to create a custom task.
+1. In the Activity sidebar, open the **GitHub Copilot app modernization** extension pane. Hover over the **TASKS** section, and then select **Create a Custom Skill**.
 
-   ![Create Formula From Source Control](doc-media/create-formula-from-source-control.png)
-1. In the opened tab, enter the **Task Name** and **Task Prompt** as shown below:
-   - **Task Name**: Expose health endpoint via Spring Boot Actuator
-   - **Task Prompt**: You are a Spring Boot developer assistant, follow the Spring Boot Actuator documentation to add basic health endpoints for Azure Container Apps deployment.
-1. Click the **Add References** button to add the Spring Boot Actuator official documentation as references.
+   ![Create Custom Skill](doc-media/create-formula-from-source-control.png)
+1. A **Create a Skill** form opens with the following fields. Fill them in as shown below:
+   - **Skill Name**: `expose-health-endpoint`
+   - **Skill Description**: `This skill helps add Spring Boot Actuator health endpoints for Azure Container Apps deployment readiness.`
+   - **Skill Content**: `You are a Spring Boot developer assistant, follow the Spring Boot Actuator documentation to add basic health endpoints for Azure Container Apps deployment.`
 
-   ![Health endpoint task](doc-media/health-endpoint-task.png)
-1. In the popped-up quick-pick window, select **External links**. Then paste the following link: `https://docs.spring.io/spring-boot/reference/actuator/endpoints.html`. Click **Save** to create the task.
-1. Click the **Run** button to trigger the custom task.
-1. Follow the same steps as the predefined task to review and apply the changes.
+1. Click **Add Resources** to add the Spring Boot Actuator official documentation as a resource. Paste the following link: `https://docs.spring.io/spring-boot/reference/actuator/endpoints.html`.
+
+   ![Create a Skill form](doc-media/health-endpoint-task.png)
+1. Click **Save** to create the skill. Your custom skill now appears in the **TASKS** > **My Skills** section.
+1. Click **Run** to execute it.
+1. The Copilot chat window opens in Agent Mode and automatically generates the migration plan, checks out a new branch, performs code changes, and runs the validation and fix iteration loop. Click **Allow** for any tool call requests from the agent.
 1. Review the proposed code changes and click **Keep** to apply them.
 
 ## Containerize Applications
 
 Now that you have completed the upgrade and health endpoint steps, the next step is to prepare your application for cloud deployment by containerizing both the web and worker modules. In this section, you will use **Containerization Tasks** to containerize your applications.
 
-1. Open the sidebar of `GITHUB COPILOT APP MODERNIZATION`. In **Tasks** view, click the **Run Task** button of **Java** -> **Containerization Tasks** -> **Containerize Application**.
+1. In the Activity sidebar, open the **GitHub Copilot app modernization** extension pane. In the **TASKS** section, expand **Common Tasks** > **Containerize Tasks** and click the run button for **Containerize Application**.
   
     ![Run Containerize Application task](doc-media/containerization-run-task.png)
 

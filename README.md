@@ -140,7 +140,7 @@ The workshop covers:
 - Installing GitHub Copilot app modernization
 - Assessing your Java application
 - Upgrading runtime & frameworks (Java 8 → 21, Spring Boot 2.x → 3.x)
-- Exposing health endpoints using custom tasks
+- Exposing health endpoints using custom skills
 - Containerizing applications
 
 
