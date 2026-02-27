@@ -6,7 +6,7 @@ Prepare your modernized application for cloud deployment by containerizing both 
 
 ## Run the Containerization Task
 
-1. Open the sidebar of `GITHUB COPILOT APP MODERNIZATION`. In **Tasks** view, click the **Run Task** button of **Java** → **Containerization Tasks** → **Containerize Application**.
+1. In the Activity sidebar, open the **GitHub Copilot app modernization** extension pane. In the **TASKS** section, expand **Common Tasks** > **Containerize Tasks** and click the run button for **Containerize Application**.
 
     ![Run Containerize Application task](../doc-media/containerization-run-task.png)
 
@@ -40,7 +40,7 @@ You've completed the App Modernization workshop! Here's what you accomplished:
 
 - ✅ **Assessed** the legacy Java application to understand modernization needs
 - ✅ **Upgraded** from Java 8 → 21 and Spring Boot 2.x → 3.x
-- ✅ **Added health endpoints** using custom tasks and Spring Boot Actuator
+- ✅ **Added health endpoints** using custom skills and Spring Boot Actuator
 - ✅ **Containerized** the application for cloud deployment
 
 ### What's Next?

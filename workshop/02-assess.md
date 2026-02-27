@@ -7,13 +7,13 @@ Run the GitHub Copilot app modernization assessment on the `asset-manager` appli
 ## Run the Assessment
 
 1. Open VS Code with all the prerequisites installed for the asset manager by changing the directory to the `asset-manager` directory and running `code .` in that directory.
-1. Open the `GitHub Copilot app modernization` extension.
-1. In the **QUICKSTART** view, click the **Migrate to Azure** button to trigger app assessment.
+1. In the Activity sidebar, open the **GitHub Copilot app modernization** extension pane.
+1. In the **QUICKSTART** section, click **Start Assessment** to trigger the app assessment.
 
    ![Trigger Assessment](../doc-media/trigger-assessment.png)
 
-1. Wait for the assessment to be completed and the report to be generated.
-1. Review the **Assessment Report**. Select the **Issues** tab to view the proposed solutions for the issues identified in the report.
+1. Wait for the assessment to be completed. This step could take several minutes.
+1. Upon completion, an **Assessment Report** tab opens. This report provides a categorized view of cloud readiness issues and recommended solutions. Select the **Issues** tab to view proposed solutions and proceed with migration steps.
 
 ## Understanding the Assessment Report
 
@@ -28,6 +28,6 @@ The assessment report provides:
 
 ## ✅ Checkpoint
 
-- [ ] Assessment triggered from the QUICKSTART view
+- [ ] Assessment triggered from the QUICKSTART section
 - [ ] Assessment report generated successfully
 - [ ] Issues tab reviewed with proposed solutions
